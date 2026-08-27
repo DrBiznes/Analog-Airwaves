@@ -1,0 +1,9 @@
+{
+  "block.analog_airwaves.transmitter": "Radio Transmitter",
+  "item.analog_airwaves.portable_radio": "Portable Radio",
+  "tooltip.analog_airwaves.portable_radio.frequency": "Frequency: %s",
+  "tooltip.analog_airwaves.portable_radio.held": "Receives while held",
+  "message.analog_airwaves.no_signal": "Frequency %s — No signal",
+  "message.analog_airwaves.interference": "Frequency %s — Interference",
+  "message.analog_airwaves.playing": "Frequency %s — %s"
+}

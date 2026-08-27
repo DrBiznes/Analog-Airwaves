@@ -1,0 +1,21 @@
+package me.jamino.analog_airwaves.registry;
+
+import me.jamino.analog_airwaves.AnalogAirwaves;
+import me.jamino.analog_airwaves.block.entity.TransmitterBlockEntity;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public final class AirwavesBlockEntities {
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, AnalogAirwaves.MOD_ID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TransmitterBlockEntity>> TRANSMITTER =
+            BLOCK_ENTITIES.register("transmitter", () -> BlockEntityType.Builder.of(
+                    TransmitterBlockEntity::new,
+                    AirwavesBlocks.TRANSMITTER.get()).build(null));
+
+    private AirwavesBlockEntities() {
+    }
+}
