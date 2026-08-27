@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " I ",
+    "CQC",
+    "CRC"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_nugget" },
+    "C": { "item": "minecraft:copper_ingot" },
+    "Q": { "item": "minecraft:quartz" },
+    "R": { "item": "minecraft:redstone" }
+  },
+  "result": {
+    "id": "analog_airwaves:portable_radio",
+    "count": 1
+  }
+}

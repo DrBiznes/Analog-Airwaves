@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": { "recipes": ["analog_airwaves:transmitter"] },
+  "criteria": {
+    "has_repeater": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": "minecraft:repeater" }] }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "analog_airwaves:transmitter" }
+    }
+  },
+  "requirements": [["has_repeater", "has_the_recipe"]]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " I ",
+    "CRC",
+    "SSS"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_bars" },
+    "C": { "item": "minecraft:copper_ingot" },
+    "R": { "item": "minecraft:repeater" },
+    "S": { "item": "minecraft:smooth_stone_slab" }
+  },
+  "result": {
+    "id": "analog_airwaves:transmitter",
+    "count": 1
+  }
+}
