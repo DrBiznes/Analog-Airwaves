@@ -2,14 +2,14 @@
   "parent": "minecraft:recipes/root",
   "rewards": { "recipes": ["analog_airwaves:transmitter"] },
   "criteria": {
-    "has_repeater": {
+    "has_lightning_rod": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": { "items": [{ "items": "minecraft:repeater" }] }
+      "conditions": { "items": [{ "items": "minecraft:lightning_rod" }] }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": { "recipe": "analog_airwaves:transmitter" }
     }
   },
-  "requirements": [["has_repeater", "has_the_recipe"]]
+  "requirements": [["has_lightning_rod", "has_the_recipe"]]
 }
