@@ -1,10 +1,10 @@
 package me.jamino.analog_airwaves.client;
 
 import com.palm1.analogaudio.client.ClientHooks;
-import com.palm1.analogaudio.registry.ModDataComponents;
 import me.jamino.analog_airwaves.AnalogAirwaves;
 import me.jamino.analog_airwaves.item.PortableRadioItem;
 import me.jamino.analog_airwaves.network.ReceiverSignalS2C;
+import me.jamino.analog_airwaves.server.ReceiverHand;
 import me.jamino.analog_airwaves.server.StationResolution;
 import me.jamino.analog_airwaves.server.StationSnapshot;
 import net.minecraft.client.Minecraft;
@@ -69,9 +69,7 @@ public final class ClientReceiverState {
         }
 
         ItemStack heldReceiver = getHeldReceiver(minecraft);
-        int heldFrequency = heldReceiver.isEmpty()
-                ? 0
-                : heldReceiver.getOrDefault(ModDataComponents.FREQUENCY.get(), 1);
+        int heldFrequency = heldReceiver.isEmpty() ? 0 : PortableRadioItem.getFrequency(heldReceiver);
         if (heldReceiver.isEmpty() || heldFrequency != currentSignal.frequency()) {
             clear(false);
             return;
@@ -99,14 +97,20 @@ public final class ClientReceiverState {
         clear(false);
     }
 
+    /**
+     * Mirrors {@link me.jamino.analog_airwaves.server.ReceiverService#getHeldReceiver}: the main
+     * hand is authoritative, so both sides agree on which radio is receiving.
+     */
     private static ItemStack getHeldReceiver(Minecraft minecraft) {
-        if (minecraft.player.getMainHandItem().getItem() instanceof PortableRadioItem) {
-            return minecraft.player.getMainHandItem();
+        ItemStack mainHand = minecraft.player.getMainHandItem();
+        ItemStack offHand = minecraft.player.getOffhandItem();
+        ReceiverHand hand = ReceiverHand.select(
+                mainHand.getItem() instanceof PortableRadioItem,
+                offHand.getItem() instanceof PortableRadioItem);
+        if (hand == null) {
+            return ItemStack.EMPTY;
         }
-        if (minecraft.player.getOffhandItem().getItem() instanceof PortableRadioItem) {
-            return minecraft.player.getOffhandItem();
-        }
-        return ItemStack.EMPTY;
+        return hand == ReceiverHand.MAIN_HAND ? mainHand : offHand;
     }
 
     private static boolean playbackChanged(ReceiverSignalS2C previous, ReceiverSignalS2C next) {
