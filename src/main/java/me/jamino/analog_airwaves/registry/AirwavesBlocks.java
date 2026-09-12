@@ -1,6 +1,7 @@
 package me.jamino.analog_airwaves.registry;
 
 import me.jamino.analog_airwaves.AnalogAirwaves;
+import me.jamino.analog_airwaves.block.PortableRadioBlock;
 import me.jamino.analog_airwaves.block.TransmitterBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,6 +15,12 @@ public final class AirwavesBlocks {
             () -> new TransmitterBlock(BlockBehaviour.Properties.of()
                     .strength(0.6F)
                     .sound(SoundType.METAL)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<PortableRadioBlock> PORTABLE_RADIO = BLOCKS.register("portable_radio",
+            () -> new PortableRadioBlock(BlockBehaviour.Properties.of()
+                    .strength(0.5F)
+                    .sound(SoundType.WOOD)
                     .noOcclusion()));
 
     private AirwavesBlocks() {

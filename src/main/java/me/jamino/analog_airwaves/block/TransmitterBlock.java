@@ -37,9 +37,11 @@ public final class TransmitterBlock extends BaseEntityBlock {
     public static final EnumProperty<TransmitterStatus> STATUS =
             EnumProperty.create("status", TransmitterStatus.class);
 
+    // Slab, aerial rod and aerial tip, matching the model element for element.
     private static final VoxelShape SHAPE = Shapes.or(
-            Block.box(0, 0, 0, 16, 3, 16),
-            Block.box(7, 3, 7, 9, 10, 9));
+            Block.box(0, 0, 0, 16, 4, 16),
+            Block.box(7, 4, 7, 9, 12, 9),
+            Block.box(6, 12, 6, 10, 16, 10));
 
     public TransmitterBlock(Properties properties) {
         super(properties);

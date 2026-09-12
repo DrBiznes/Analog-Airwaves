@@ -1,6 +1,7 @@
 package me.jamino.analog_airwaves.registry;
 
 import me.jamino.analog_airwaves.AnalogAirwaves;
+import me.jamino.analog_airwaves.block.entity.PortableRadioBlockEntity;
 import me.jamino.analog_airwaves.block.entity.TransmitterBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,6 +16,11 @@ public final class AirwavesBlockEntities {
             BLOCK_ENTITIES.register("transmitter", () -> BlockEntityType.Builder.of(
                     TransmitterBlockEntity::new,
                     AirwavesBlocks.TRANSMITTER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PortableRadioBlockEntity>> PORTABLE_RADIO =
+            BLOCK_ENTITIES.register("portable_radio", () -> BlockEntityType.Builder.of(
+                    PortableRadioBlockEntity::new,
+                    AirwavesBlocks.PORTABLE_RADIO.get()).build(null));
 
     private AirwavesBlockEntities() {
     }
