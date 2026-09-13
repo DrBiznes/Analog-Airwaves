@@ -16,7 +16,7 @@
       ],
       "vmArgs": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003danalog_airwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
+        "-Dfml.modFolders\u003danalogairwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -38,7 +38,7 @@
       ],
       "vmArgs": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003danalog_airwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
+        "-Dfml.modFolders\u003danalogairwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -60,7 +60,7 @@
       ],
       "vmArgs": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003danalog_airwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
+        "-Dfml.modFolders\u003danalogairwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -82,7 +82,7 @@
       ],
       "vmArgs": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003danalog_airwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
+        "-Dfml.modFolders\u003danalogairwaves%%C:\\hackerman\\Analog Airwaves\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},

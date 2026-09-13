@@ -66,8 +66,10 @@ public final class PortableRadioItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip,
             TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.analog_airwaves.portable_radio.frequency", getFrequency(stack))
-                .withStyle(ChatFormatting.GRAY));
+        // Analog Audio slots the frequency directly under the item name rather than appending it.
+        tooltip.add(Math.min(tooltip.size(), 1),
+                Component.translatable("tooltip.analog_airwaves.portable_radio.frequency", getFrequency(stack))
+                        .withStyle(ChatFormatting.GRAY));
         AirwavesTooltips.appendControls(tooltip,
                 "tooltip.analog_airwaves.portable_radio.tune",
                 "tooltip.analog_airwaves.portable_radio.held",
