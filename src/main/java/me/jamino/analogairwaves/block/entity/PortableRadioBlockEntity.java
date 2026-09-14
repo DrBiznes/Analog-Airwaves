@@ -1,5 +1,6 @@
 package me.jamino.analogairwaves.block.entity;
 
+import me.jamino.analogairwaves.RadioVolume;
 import me.jamino.analogairwaves.block.PortableRadioBlock;
 import me.jamino.analogairwaves.registry.AirwavesBlockEntities;
 import me.jamino.analogairwaves.server.ReceiverService;
@@ -19,9 +20,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class PortableRadioBlockEntity extends BlockEntity {
     public static final String FREQUENCY_TAG = "Frequency";
     public static final String POWERED_TAG = "Powered";
+    public static final String VOLUME_TAG = "Volume";
 
     private int frequency = TransmitterBlockEntity.MIN_FREQUENCY;
     private boolean powered = true;
+    private int volume = RadioVolume.DEFAULT;
 
     public PortableRadioBlockEntity(BlockPos pos, BlockState blockState) {
         super(AirwavesBlockEntities.PORTABLE_RADIO.get(), pos, blockState);
@@ -40,6 +43,29 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         setChanged();
         syncToClient();
         pushToListeners();
+    }
+
+    /**
+     * This radio's own listening volume. Set while the radio was held and carried in on placement;
+     * it cannot be changed in place, but it is kept so a radio picked up, adjusted and put back
+     * down plays at the new level.
+     */
+    public int getVolume() {
+        return volume;
+    }
+
+    /**
+     * No {@code pushToListeners} here, unlike frequency and power: volume rides the block entity
+     * sync rather than the signal packet, and the client reads it off the block entity each tick.
+     */
+    public void setVolume(int percent) {
+        int clamped = RadioVolume.clamp(percent);
+        if (this.volume == clamped) {
+            return;
+        }
+        this.volume = clamped;
+        setChanged();
+        syncToClient();
     }
 
     public boolean isPowered() {
@@ -122,6 +148,7 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tag.putInt(FREQUENCY_TAG, frequency);
         tag.putBoolean(POWERED_TAG, powered);
+        tag.putInt(VOLUME_TAG, volume);
     }
 
     @Override
@@ -130,6 +157,7 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         frequency = TransmitterBlockEntity.clampFrequency(
                 tag.contains(FREQUENCY_TAG) ? tag.getInt(FREQUENCY_TAG) : TransmitterBlockEntity.MIN_FREQUENCY);
         powered = !tag.contains(POWERED_TAG) || tag.getBoolean(POWERED_TAG);
+        volume = RadioVolume.clamp(tag.contains(VOLUME_TAG) ? tag.getInt(VOLUME_TAG) : RadioVolume.DEFAULT);
     }
 
     @Override

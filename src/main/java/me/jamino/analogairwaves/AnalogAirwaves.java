@@ -2,6 +2,7 @@ package me.jamino.analogairwaves;
 
 import me.jamino.analogairwaves.network.AirwavesNetwork;
 import me.jamino.analogairwaves.registry.AirwavesBlockEntities;
+import me.jamino.analogairwaves.registry.AirwavesDataComponents;
 import me.jamino.analogairwaves.registry.AirwavesBlocks;
 import me.jamino.analogairwaves.registry.AirwavesItems;
 import me.jamino.analogairwaves.server.ReceiverService;
@@ -24,6 +25,7 @@ public final class AnalogAirwaves {
         AirwavesBlocks.BLOCKS.register(modEventBus);
         AirwavesItems.ITEMS.register(modEventBus);
         AirwavesBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        AirwavesDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         modEventBus.addListener(AirwavesNetwork::registerPayloads);
         modEventBus.addListener(this::addCreativeTabEntries);

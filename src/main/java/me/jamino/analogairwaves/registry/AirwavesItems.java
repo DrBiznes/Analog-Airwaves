@@ -2,6 +2,7 @@ package me.jamino.analogairwaves.registry;
 
 import com.palm1.analogaudio.registry.ModDataComponents;
 import me.jamino.analogairwaves.AnalogAirwaves;
+import me.jamino.analogairwaves.RadioVolume;
 import me.jamino.analogairwaves.item.PortableRadioItem;
 import me.jamino.analogairwaves.item.TransmitterItem;
 import net.minecraft.world.item.Item;
@@ -17,7 +18,8 @@ public final class AirwavesItems {
     public static final DeferredItem<PortableRadioItem> PORTABLE_RADIO = ITEMS.register("portable_radio",
             () -> new PortableRadioItem(AirwavesBlocks.PORTABLE_RADIO.get(), new Item.Properties()
                     .stacksTo(1)
-                    .component(ModDataComponents.FREQUENCY.get(), 1)));
+                    .component(ModDataComponents.FREQUENCY.get(), 1)
+                    .component(AirwavesDataComponents.RADIO_VOLUME.get(), RadioVolume.DEFAULT)));
 
     private AirwavesItems() {
     }

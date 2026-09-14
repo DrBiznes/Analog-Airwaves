@@ -109,6 +109,7 @@ public final class PortableRadioBlock extends BaseEntityBlock implements SimpleW
 
         radio.setFrequency(stack.getOrDefault(ModDataComponents.FREQUENCY.get(),
                 TransmitterBlockEntity.MIN_FREQUENCY));
+        radio.setVolume(PortableRadioItem.getVolume(stack));
         radio.setPowered(state.getValue(POWERED));
 
         // Announce now rather than on the next sweep: the handheld stream is already winding down,
@@ -183,6 +184,7 @@ public final class PortableRadioBlock extends BaseEntityBlock implements SimpleW
         for (ItemStack drop : drops) {
             if (drop.getItem() instanceof PortableRadioItem) {
                 drop.set(ModDataComponents.FREQUENCY.get(), radio.getFrequency());
+                PortableRadioItem.setVolume(drop, radio.getVolume());
             }
         }
         return drops;
@@ -194,6 +196,7 @@ public final class PortableRadioBlock extends BaseEntityBlock implements SimpleW
         ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof PortableRadioBlockEntity radio) {
             stack.set(ModDataComponents.FREQUENCY.get(), radio.getFrequency());
+            PortableRadioItem.setVolume(stack, radio.getVolume());
         }
         return stack;
     }

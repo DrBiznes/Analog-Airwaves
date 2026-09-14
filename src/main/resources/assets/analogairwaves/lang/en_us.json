@@ -6,7 +6,9 @@
   "tooltip.analogairwaves.view_tooltip_description": "Hold %s for info.",
 
   "tooltip.analogairwaves.portable_radio.frequency": "Frequency: %s",
+  "tooltip.analogairwaves.portable_radio.volume": "Volume: %s%%",
   "tooltip.analogairwaves.portable_radio.tune": "Hold %s and drag to tune.",
+  "tooltip.analogairwaves.portable_radio.volume_control": "Sneak and scroll to set volume.",
   "tooltip.analogairwaves.portable_radio.held_dimension": "Receives stations from this dimension while held.",
   "tooltip.analogairwaves.portable_radio.held_universal": "Receives stations from any dimension while held.",
   "tooltip.analogairwaves.portable_radio.place": "Press %s on a surface to place.",
@@ -19,5 +21,6 @@
 
   "message.analogairwaves.no_signal": "Frequency %s — No signal",
   "message.analogairwaves.interference": "Frequency %s — Interference",
-  "message.analogairwaves.playing": "Frequency %s — %s"
+  "message.analogairwaves.playing": "Frequency %s — %s",
+  "message.analogairwaves.volume": "Volume %s%%"
 }

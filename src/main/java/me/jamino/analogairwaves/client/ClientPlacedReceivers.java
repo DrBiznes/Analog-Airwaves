@@ -2,6 +2,8 @@ package me.jamino.analogairwaves.client;
 
 import com.palm1.analogaudio.client.ClientHooks;
 import me.jamino.analogairwaves.AnalogAirwaves;
+import me.jamino.analogairwaves.RadioVolume;
+import me.jamino.analogairwaves.block.entity.PortableRadioBlockEntity;
 import me.jamino.analogairwaves.network.PlacedReceiverSignalS2C;
 import me.jamino.analogairwaves.server.StationSnapshot;
 import net.minecraft.client.Minecraft;
@@ -39,6 +41,9 @@ public final class ClientPlacedReceivers {
     }
 
     private static final Map<BlockPos, ActiveRadio> ACTIVE = new HashMap<>();
+
+    /** Last volume read off each active radio's block entity; see {@link #volumeAt}. */
+    private static final Map<BlockPos, Integer> LAST_KNOWN_VOLUME = new HashMap<>();
 
     public static void handle(PlacedReceiverSignalS2C signal) {
         BlockPos pos = signal.pos().immutable();
@@ -100,13 +105,13 @@ public final class ClientPlacedReceivers {
             }
 
             StationSnapshot station = radio.station();
-            // The station's own broadcast volume is passed through unchanged.
+            // This radio's own volume decides how loud it plays, not the broadcasting radio's.
             ClientHooks.tickRadio(
                     radio.emitter(),
                     Vec3.atCenterOf(pos),
                     station.cassette(),
                     station.startTime(),
-                    station.volume(),
+                    RadioVolume.toGain(volumeAt(minecraft, pos)),
                     station.looping());
         }
 
@@ -120,7 +125,25 @@ public final class ClientPlacedReceivers {
         clear();
     }
 
+    /**
+     * The volume of the radio at {@code pos}, read from its block entity.
+     *
+     * <p>A radio can stay audible past the point where its chunk is loaded on this client, and
+     * then there is no block entity to ask. The last level seen for that radio stands in, so it
+     * keeps playing at the volume it had rather than jumping to the default.
+     */
+    private static int volumeAt(Minecraft minecraft, BlockPos pos) {
+        if (minecraft.level != null && minecraft.level.isLoaded(pos)
+                && minecraft.level.getBlockEntity(pos) instanceof PortableRadioBlockEntity radio) {
+            int volume = radio.getVolume();
+            LAST_KNOWN_VOLUME.put(pos, volume);
+            return volume;
+        }
+        return LAST_KNOWN_VOLUME.getOrDefault(pos, RadioVolume.DEFAULT);
+    }
+
     private static void stop(BlockPos pos) {
+        LAST_KNOWN_VOLUME.remove(pos);
         ActiveRadio removed = ACTIVE.remove(pos);
         if (removed != null) {
             ClientHooks.stopRadio(removed.emitter());
@@ -132,6 +155,7 @@ public final class ClientPlacedReceivers {
             stop(pos);
         }
         ACTIVE.clear();
+        LAST_KNOWN_VOLUME.clear();
     }
 
     private ClientPlacedReceivers() {
