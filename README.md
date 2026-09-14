@@ -8,7 +8,8 @@ Place a radio broadcaster directly on top of an Analog Audio radio, tune it to a
 
 - **Radio Broadcasters** broadcast the radio beneath them across the dimension by default (Can be changed to universal inlcuding modded dimensions in the config). They **only** broadcast while their chunk is loaded.
 - **Portable radios** play music while held, or while placed and powered on.
-- Placed radios use the station's own broadcast volume
+- **Each portable radio has its own volume**, independent of the broadcasting radio. Sneak and scroll while holding one to set it from 0% to 150%; the level shows above the hotbar and in the tooltip. Turn the broadcaster all the way down and listeners still hear it at whatever volume they picked.
+- Volume is set on the radio in hand, not on a placed one. A placed radio keeps the volume it was placed with, so pick it up, adjust, and set it back down to change it.
 - Multiple loaded radio broadcasters on the same frequency cause interference, and receivers on that frequency hear static instead of a station.
 - **Create mod integration** When create mod is installed seperate create specific recipes will be used.
 

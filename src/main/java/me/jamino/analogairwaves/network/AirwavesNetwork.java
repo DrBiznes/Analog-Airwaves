@@ -12,6 +12,9 @@ public final class AirwavesNetwork {
         registrar.playToServer(SetPortableRadioFrequencyC2S.TYPE,
                 SetPortableRadioFrequencyC2S.STREAM_CODEC,
                 SetPortableRadioFrequencyC2S::handle);
+        registrar.playToServer(SetPortableRadioVolumeC2S.TYPE,
+                SetPortableRadioVolumeC2S.STREAM_CODEC,
+                SetPortableRadioVolumeC2S::handle);
         registrar.playToClient(ReceiverSignalS2C.TYPE,
                 ReceiverSignalS2C.STREAM_CODEC,
                 ReceiverSignalS2C::handle);

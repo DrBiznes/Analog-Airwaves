@@ -3,7 +3,9 @@ package me.jamino.analogairwaves.item;
 import com.palm1.analogaudio.client.ClientHooks;
 import com.palm1.analogaudio.registry.ModDataComponents;
 import me.jamino.analogairwaves.Config;
+import me.jamino.analogairwaves.RadioVolume;
 import me.jamino.analogairwaves.block.entity.TransmitterBlockEntity;
+import me.jamino.analogairwaves.registry.AirwavesDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -67,12 +69,18 @@ public final class PortableRadioItem extends BlockItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip,
             TooltipFlag flag) {
-        // Analog Audio slots the frequency directly under the item name rather than appending it.
-        tooltip.add(Math.min(tooltip.size(), 1),
+        // Analog Audio slots the frequency directly under the item name rather than appending it,
+        // and the volume reads as a second line of the same block right beneath it.
+        int index = Math.min(tooltip.size(), 1);
+        tooltip.add(index,
                 Component.translatable("tooltip.analogairwaves.portable_radio.frequency", getFrequency(stack))
+                        .withStyle(ChatFormatting.GRAY));
+        tooltip.add(index + 1,
+                Component.translatable("tooltip.analogairwaves.portable_radio.volume", getVolume(stack))
                         .withStyle(ChatFormatting.GRAY));
         AirwavesTooltips.appendControls(tooltip,
                 "tooltip.analogairwaves.portable_radio.tune",
+                "tooltip.analogairwaves.portable_radio.volume_control",
                 Config.universalFrequencies()
                         ? "tooltip.analogairwaves.portable_radio.held_universal"
                         : "tooltip.analogairwaves.portable_radio.held_dimension",
@@ -83,5 +91,15 @@ public final class PortableRadioItem extends BlockItem {
     public static int getFrequency(ItemStack stack) {
         return TransmitterBlockEntity.clampFrequency(
                 stack.getOrDefault(ModDataComponents.FREQUENCY.get(), TransmitterBlockEntity.MIN_FREQUENCY));
+    }
+
+    /** This radio's own listening volume, independent of the broadcasting radio's. */
+    public static int getVolume(ItemStack stack) {
+        return RadioVolume.clamp(
+                stack.getOrDefault(AirwavesDataComponents.RADIO_VOLUME.get(), RadioVolume.DEFAULT));
+    }
+
+    public static void setVolume(ItemStack stack, int percent) {
+        stack.set(AirwavesDataComponents.RADIO_VOLUME.get(), RadioVolume.clamp(percent));
     }
 }

@@ -2,6 +2,7 @@ package me.jamino.analogairwaves.client;
 
 import com.palm1.analogaudio.client.ClientHooks;
 import me.jamino.analogairwaves.AnalogAirwaves;
+import me.jamino.analogairwaves.RadioVolume;
 import me.jamino.analogairwaves.item.PortableRadioItem;
 import me.jamino.analogairwaves.network.ReceiverSignalS2C;
 import me.jamino.analogairwaves.server.ReceiverHand;
@@ -42,6 +43,9 @@ public final class ClientReceiverState {
 
     /** When the held radio went away while still playing, or 0 when it did not. */
     private static long heldLostAtMillis;
+
+    /** The held radio's volume as of the last tick it was actually in hand. */
+    private static int lastHeldVolume = RadioVolume.DEFAULT;
 
     public static void handle(ReceiverSignalS2C signal) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -109,12 +113,19 @@ public final class ClientReceiverState {
                 playbackIdentity = new RadioEmitter.Handheld(minecraft.player.getUUID());
             }
             StationSnapshot station = currentSignal.station();
+            // The listener's own volume, not the broadcasting radio's: a station turned all the
+            // way down is still a signal, and it is this radio that decides how loud it plays.
+            // While lingering through a placement the stack is already gone, so the last known
+            // level carries the handover rather than snapping to the default.
+            if (!heldReceiver.isEmpty()) {
+                lastHeldVolume = PortableRadioItem.getVolume(heldReceiver);
+            }
             ClientHooks.tickRadio(
                     playbackIdentity,
                     minecraft.player.position(),
                     station.cassette(),
                     station.startTime(),
-                    station.volume(),
+                    RadioVolume.toGain(lastHeldVolume),
                     station.looping());
         } else {
             stopPlayback();
@@ -178,6 +189,12 @@ public final class ClientReceiverState {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || signal.frequency() <= 0) {
             announcedKey = "";
+            return;
+        }
+
+        // Both share the action bar. A station transition is worth noting but not worth talking
+        // over someone who is mid-adjustment, so the volume readout holds the bar while it is up.
+        if (PortableRadioVolumeInput.isShowingVolume()) {
             return;
         }
 
