@@ -53,6 +53,17 @@ public final class ClientPlacedReceivers {
     }
 
     /**
+     * Whether the radio at {@code pos} is currently playing a station.
+     *
+     * <p>This is the renderer's cue for the broadcast waves: it is true only while the server is
+     * actively pushing a station for that radio, so a radio that is powered but tuned to a dead
+     * frequency draws nothing.
+     */
+    public static boolean isPlayingAt(BlockPos pos) {
+        return ACTIVE.containsKey(pos);
+    }
+
+    /**
      * Whether a placed radio is already playing this exact broadcast. The handheld receiver uses
      * this to know its stream has been taken over by a radio that was just placed.
      */
