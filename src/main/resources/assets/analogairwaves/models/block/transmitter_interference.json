@@ -1,0 +1,6 @@
+{
+  "parent": "analogairwaves:block/transmitter_base",
+  "textures": {
+    "side": "analogairwaves:block/transmitter_interference"
+  }
+}

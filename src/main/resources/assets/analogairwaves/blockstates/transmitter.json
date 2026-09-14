@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north,status=idle": { "model": "analogairwaves:block/transmitter_idle" },
+    "facing=east,status=idle": { "model": "analogairwaves:block/transmitter_idle", "y": 90 },
+    "facing=south,status=idle": { "model": "analogairwaves:block/transmitter_idle", "y": 180 },
+    "facing=west,status=idle": { "model": "analogairwaves:block/transmitter_idle", "y": 270 },
+    "facing=north,status=broadcasting": { "model": "analogairwaves:block/transmitter_broadcasting" },
+    "facing=east,status=broadcasting": { "model": "analogairwaves:block/transmitter_broadcasting", "y": 90 },
+    "facing=south,status=broadcasting": { "model": "analogairwaves:block/transmitter_broadcasting", "y": 180 },
+    "facing=west,status=broadcasting": { "model": "analogairwaves:block/transmitter_broadcasting", "y": 270 },
+    "facing=north,status=interference": { "model": "analogairwaves:block/transmitter_interference" },
+    "facing=east,status=interference": { "model": "analogairwaves:block/transmitter_interference", "y": 90 },
+    "facing=south,status=interference": { "model": "analogairwaves:block/transmitter_interference", "y": 180 },
+    "facing=west,status=interference": { "model": "analogairwaves:block/transmitter_interference", "y": 270 }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "analog_airwaves:transmitter",
-    "analog_airwaves:portable_radio"
+    "analogairwaves:transmitter",
+    "analogairwaves:portable_radio"
   ]
 }
