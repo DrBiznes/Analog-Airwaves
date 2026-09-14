@@ -2,7 +2,7 @@
   <img src="docs/banner.png" alt="Analog Airwaves" width="800">
 </p>
 
-A small NeoForge 1.21.1 radio-station extension for [Analog Audio](https://modrinth.com/mod/analog-audio), adding broadcast transmitters and portable radios.
+A small radio-station addon for [Analog Audio](https://modrinth.com/mod/analog-audio), adding radio broadcasters and portable radios.
 
 Place a radio broadcaster directly on top of an Analog Audio radio, tune it to a frequency, then tune a portable radio to the same frequency to listen to your radio station!!
 
