@@ -36,11 +36,26 @@ public final class Config {
     }
 
     public static boolean universalFrequencies() {
-        return UNIVERSAL_FREQUENCIES.get();
+        return valueOrDefault(UNIVERSAL_FREQUENCIES);
     }
 
     public static boolean portableRadioDefaultPowered() {
-        return PORTABLE_RADIO_DEFAULT_POWERED.get();
+        return valueOrDefault(PORTABLE_RADIO_DEFAULT_POWERED);
+    }
+
+    /**
+     * Reads a config value, falling back to its default while the config is still unloaded.
+     *
+     * <p>{@link ModConfigSpec.ConfigValue#get()} throws outright before the file is loaded, which
+     * happens both in unit tests and for any lookup that lands before config load during startup.
+     * A station lookup is not worth crashing over, so the declared default stands in.
+     */
+    private static boolean valueOrDefault(ModConfigSpec.BooleanValue value) {
+        try {
+            return value.get();
+        } catch (IllegalStateException ignored) {
+            return value.getDefault();
+        }
     }
 
     private Config() {
