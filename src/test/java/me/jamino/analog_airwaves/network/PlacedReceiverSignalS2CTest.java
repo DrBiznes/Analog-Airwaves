@@ -45,6 +45,28 @@ class PlacedReceiverSignalS2CTest {
         assertFalse(stopped.playing());
         assertNull(stopped.station());
         assertEquals(POS, stopped.pos());
+        assertEquals(PlacedReceiverSignalS2C.Stop.OUT_OF_RANGE, stopped.stop());
+    }
+
+    @Test
+    void removedCarriesNoStationAndReportsTheRadioIsGone() {
+        PlacedReceiverSignalS2C removed = PlacedReceiverSignalS2C.removed(POS);
+
+        assertFalse(removed.playing());
+        assertNull(removed.station());
+        assertEquals(POS, removed.pos());
+        assertEquals(PlacedReceiverSignalS2C.Stop.GONE, removed.stop());
+    }
+
+    /** The server keys pending stops off these payloads, so the two reasons must not collide. */
+    @Test
+    void aRemovedRadioIsDistinctFromOneThatMerelyWentOutOfRange() {
+        assertNotEquals(PlacedReceiverSignalS2C.removed(POS), PlacedReceiverSignalS2C.stopped(POS));
+    }
+
+    @Test
+    void aPlayingSignalReportsNoStopReason() {
+        assertEquals(PlacedReceiverSignalS2C.Stop.NONE, signal(POS, 1000L, 0.5F).stop());
     }
 
     @Test
@@ -53,7 +75,7 @@ class PlacedReceiverSignalS2CTest {
     }
 
     private static PlacedReceiverSignalS2C signal(BlockPos pos, long startTime, float volume) {
-        return new PlacedReceiverSignalS2C(pos, true,
+        return PlacedReceiverSignalS2C.playing(pos,
                 new StationSnapshot(BlockPos.ZERO, 0,
                         new CassetteData("uuid", "https://example.invalid/a.ogg", "Track",
                                 0, 1.0F, 5000L, "author"),

@@ -6,8 +6,10 @@ import me.jamino.analog_airwaves.block.entity.PortableRadioBlockEntity;
 import me.jamino.analog_airwaves.block.entity.TransmitterBlockEntity;
 import me.jamino.analog_airwaves.client.ClientTunerHooks;
 import me.jamino.analog_airwaves.item.PortableRadioItem;
+import me.jamino.analog_airwaves.server.ReceiverService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -107,6 +109,39 @@ public final class PortableRadioBlock extends BaseEntityBlock implements SimpleW
         radio.setFrequency(stack.getOrDefault(ModDataComponents.FREQUENCY.get(),
                 TransmitterBlockEntity.MIN_FREQUENCY));
         radio.setPowered(state.getValue(POWERED));
+
+        // Announce now rather than on the next sweep: the handheld stream is already winding down,
+        // and overlapping the two is what keeps the song from cutting as the radio leaves the hand.
+        ReceiverService.pushPlacedReceiver(radio);
+    }
+
+    /**
+     * The earliest hook on the player-break path, so the stop reaches listeners on the same tick
+     * the block disappears instead of after the client's stale timeout.
+     */
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (level instanceof ServerLevel serverLevel) {
+            ReceiverService.onPlacedReceiverDestroyed(serverLevel, pos);
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    /**
+     * Catches every other way a radio can vanish: explosions, pistons, {@code /setblock}, creative
+     * instabreak and liquid replacement.
+     *
+     * <p>The {@code newState.is(this)} guard matters more than it looks: toggling power rewrites
+     * this block's own state, which lands here too, and stopping playback on that would silence a
+     * radio that is merely switching its model.
+     */
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState,
+            boolean movedByPiston) {
+        if (!newState.is(this) && level instanceof ServerLevel serverLevel) {
+            ReceiverService.onPlacedReceiverDestroyed(serverLevel, pos);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override
