@@ -493,68 +493,6 @@ def text_width(text, pixel):
     return sum((len(GLYPHS.get(c.upper(), GLYPHS[" "])[0]) + 1) * pixel for c in text)
 
 
-# --- background texture: pixel circles --------------------------------------------------------
-# Soft darker-brown discs scattered behind everything, drawn on a chunky pixel grid so they read
-# as deliberate pixel art rather than smooth vector shapes.
-
-def draw_pixel_circle(px, cx, cy, radius, pixel, colour, filled=True, thickness=1):
-    """
-    Draws a circle snapped to a `pixel`-sized grid.
-
-    Rasterising on the coarse grid (rather than drawing smooth and downsampling) is what keeps
-    the edge chunky and hand-placed-looking, matching the blocky feel of the rest of the art.
-    """
-    cells = int(math.ceil(radius / pixel)) + 1
-    gx0 = int(cx // pixel)
-    gy0 = int(cy // pixel)
-    r_cells = radius / pixel
-    inner = r_cells - thickness
-
-    for gy in range(gy0 - cells, gy0 + cells + 1):
-        for gx in range(gx0 - cells, gx0 + cells + 1):
-            # Measure from each cell's centre so the disc stays symmetric on the grid.
-            d = math.hypot((gx + 0.5) - (gx0 + 0.5), (gy + 0.5) - (gy0 + 0.5))
-            if d > r_cells:
-                continue
-            if not filled and d < inner:
-                continue
-            fill_rect(px, gx * pixel, gy * pixel, pixel, pixel, colour)
-
-
-def scatter_circles(px, width, height, rng, avoid=(), count=26):
-    """
-    Fills the background with overlapping discs in shades a little darker than the base brown.
-
-    `avoid` is a list of (x0, y0, x1, y1) rectangles the circles keep clear of, so the wordmark
-    and the radio stay readable against the texture.
-    """
-    def blocked(cx, cy, r):
-        for (ax0, ay0, ax1, ay1) in avoid:
-            if cx + r > ax0 and cx - r < ax1 and cy + r > ay0 and cy - r < ay1:
-                return True
-        return False
-
-    for _ in range(count * 12):
-        if count <= 0:
-            break
-        r = rng.randint(14, 46)
-        cx = rng.randint(-10, width + 10)
-        cy = rng.randint(-10, height + 10)
-        if blocked(cx, cy, r + 6):
-            continue
-
-        # Two tones: a solid disc, or a hollow ring, a touch darker than the ground.
-        tone = rng.choice((0.74, 0.80, 0.86))
-        colour = shade(BG, tone)
-        pixel = rng.choice((4, 5, 6))
-        if rng.random() < 0.35:
-            draw_pixel_circle(px, cx, cy, r, pixel, colour, filled=False,
-                              thickness=rng.choice((1, 2)))
-        else:
-            draw_pixel_circle(px, cx, cy, r, pixel, colour)
-        count -= 1
-
-
 # --- broadcast arcs ------------------------------------------------------------------------------
 
 def draw_arc(px, cx, cy, radius, colour, pixel, start_deg, end_deg):
@@ -588,12 +526,7 @@ def build_banner(width=800, height=300):
                         max(0, min(255, base[1] + n)),
                         max(0, min(255, base[2] + n)))
 
-    # Background texture: darker pixel discs, kept off the wordmark and the radio.
-    scatter_circles(px, width, height, rng, avoid=(
-        (34, 82, 560, 240),          # the two lines of the wordmark
-        (width - 230, 20, width, 280),  # the radio and its broadcast arcs
-    ), count=30)
-
+    # Background texture: a sparse scatter of darker discs, kept off the wordmark and the radio.
     # Wordmark: "ANALOG" over "AIRWAVES", centred as a block on the left of the radio.
     top_text, bottom_text = "ANALOG", "AIRWAVES"
     top_pixel, bottom_pixel = 9, 8
@@ -612,9 +545,9 @@ def build_banner(width=800, height=300):
 
     # The radio itself, sitting to the right of the wordmark.
     scale = 11
-    origin = radio_centre_origin(scale, (width - 135, height // 2 + 10))
+    origin = radio_centre_origin(scale, (width - 132, height // 2 + 14))
     tip_x, tip_y = iso_point(11.5, 15, 7.5, scale, origin)
-    for i, radius in enumerate((26, 40, 54)):
+    for i, radius in enumerate((24, 36, 48)):
         draw_arc(px, tip_x, tip_y, radius, shade(TITLE, 0.95 - i * 0.18), 4, 15, 165)
     draw_radio_shadow(px, scale, origin)
     draw_radio_iso(px, scale, origin)
@@ -642,16 +575,17 @@ def build_icon(size=256):
                 max(0, min(255, int(BG_DARK[2] + (BG_LIGHT[2] - BG_DARK[2]) * t) + n)),
             )
 
-    # Background texture, kept out of the middle so the radio stays the clear subject.
-    scatter_circles(px, size, size, rng, avoid=((26, 40, size - 26, size - 20),), count=10)
+    # No background circles here: at icon size they only crowd the subject.
 
-    # Broadcast arcs behind the radio, radiating from where the aerial tip will land.
-    scale = 11
-    origin = radio_centre_origin(scale, (size // 2, size // 2 + 20))
+    # The radio sits low and small enough that the widest wave still clears the top edge.
+    scale = 8
+    origin = radio_centre_origin(scale, (size // 2, size // 2 + 34))
     tip_x, tip_y = iso_point(11.5, 15, 7.5, scale, origin)
-    for i, radius in enumerate((30, 46, 62)):
+
+    # Broadcast arcs behind the radio, sized so the outermost stays inside the frame.
+    for i, radius in enumerate((26, 38, 50)):
         colour = shade(TITLE, 0.95 - i * 0.18)
-        draw_arc(px, tip_x, tip_y, radius, colour, 4, 20, 160)
+        draw_arc(px, tip_x, tip_y, radius, colour, 3, 20, 160)
 
     draw_radio_shadow(px, scale, origin)
     draw_radio_iso(px, scale, origin)

@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "create" }
+  ],
+  "parent": "minecraft:recipes/root",
+  "rewards": { "recipes": ["analogairwaves:transmitter_create"] },
+  "criteria": {
+    "has_create_transmitter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": "create:transmitter" }] }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "analogairwaves:transmitter_create" }
+    }
+  },
+  "requirements": [["has_create_transmitter", "has_the_recipe"]]
+}

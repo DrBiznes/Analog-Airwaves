@@ -9,6 +9,7 @@ the top/bottom ring is copied pixel-for-pixel from analogaudio:block/radio_top.
 Run:  python tools/generate_textures.py
 """
 
+import math
 import os
 import struct
 import zlib
@@ -279,6 +280,64 @@ def portable_item():
     return px
 
 
+# --- broadcast waves ---------------------------------------------------------------------------
+# The billboard a playing placed radio draws above its aerial. Three concentric arcs that expand
+# and fade outward, as a 16x48 vertical strip of three 16x16 frames for Minecraft's .mcmeta
+# animation to cycle.
+
+WAVE_BRIGHT = (0xF2, 0x8C, 0x3C)
+WAVE_MID = (0xE2, 0x6B, 0x24)
+WAVE_DIM = (0xB8, 0x44, 0x16)
+
+
+def wave_frame(phase):
+    """
+    One animation frame. `phase` in 0..2 slides each arc outward by one ring, so cycling the
+    frames reads as waves travelling away from the aerial rather than merely blinking.
+    """
+    px = blank(16, TRANSPARENT)
+    # The aerial tip sits at the bottom centre of the billboard. A 16px frame's centre line falls
+    # between columns 7 and 8, so each arc is mirrored across that boundary below rather than
+    # centred on a whole column, which would sit half a pixel right of the aerial.
+    origin_y = 13
+
+    # Three arcs at increasing radii; the phase offset rotates which radius is brightest.
+    for index, radius in enumerate((2, 5, 8)):
+        r = radius + phase
+        if r > 12:
+            continue
+        colour = (WAVE_BRIGHT, WAVE_MID, WAVE_DIM)[(index + phase) % 3]
+        # Walk the arc in fine angular steps and snap to the pixel grid, so the curve stays
+        # chunky and symmetric instead of anti-aliased.
+        # Plot the right half only, then mirror it across the centre line. Deriving the left
+        # half from the right guarantees the arc is exactly centred on the 7/8 boundary; letting
+        # both halves round independently is what left it a half pixel off the aerial.
+        # Sweep from the apex outward. Stepping one texel of arc length at a time keeps the curve
+        # unbroken; sparser steps leave gaps at the top where the two mirrored halves meet.
+        steps = max(24, r * 12)
+        for step in range(steps + 1):
+            # 0 is the arc's outer tip, pi/2 its apex. Sweeping the full quarter turn closes the
+            # seam at the top; stopping short of it is what left a notch where the halves meet.
+            angle = math.pi * 0.5 * (step / steps)
+            dx = int(round(math.cos(angle) * r))
+            dy = int(round(math.sin(angle) * r))
+            y = origin_y - dy
+            if not (0 <= y < 16):
+                continue
+            for x in (8 + dx, 7 - dx):
+                if 0 <= x < 16:
+                    px[y][x] = colour
+    return px
+
+
+def broadcast_waves():
+    """Stacks the three frames into one 16x48 strip."""
+    strip = []
+    for phase in range(3):
+        strip.extend(wave_frame(phase))
+    return strip
+
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(root)
@@ -297,6 +356,7 @@ def main():
     write_png(os.path.join(OUT_BLOCK, "portable_radio_bottom.png"), portable_bottom())
     write_png(os.path.join(OUT_BLOCK, "portable_radio_antenna.png"), portable_antenna())
     write_png(os.path.join(OUT_ITEM, "portable_radio.png"), portable_item())
+    write_png(os.path.join(OUT_BLOCK, "broadcast_waves.png"), broadcast_waves())
 
 
 if __name__ == "__main__":

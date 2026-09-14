@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": { "recipes": ["analogairwaves:portable_radio"] },
+  "rewards": { "recipes": ["analogairwaves:portable_radio", "analogairwaves:portable_radio_create"] },
   "criteria": {
     "has_redstone": {
       "trigger": "minecraft:inventory_changed",
@@ -9,7 +9,11 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": { "recipe": "analogairwaves:portable_radio" }
+    },
+    "has_the_create_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "analogairwaves:portable_radio_create" }
     }
   },
-  "requirements": [["has_redstone", "has_the_recipe"]]
+  "requirements": [["has_redstone"], ["has_the_recipe", "has_the_create_recipe"]]
 }
