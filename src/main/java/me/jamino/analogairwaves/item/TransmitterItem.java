@@ -1,5 +1,6 @@
 package me.jamino.analogairwaves.item;
 
+import me.jamino.analogairwaves.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,8 @@ public final class TransmitterItem extends BlockItem {
         AirwavesTooltips.appendControls(tooltip,
                 "tooltip.analogairwaves.transmitter.place",
                 "tooltip.analogairwaves.transmitter.tune",
-                "tooltip.analogairwaves.transmitter.broadcast");
+                Config.universalFrequencies()
+                        ? "tooltip.analogairwaves.transmitter.broadcast_universal"
+                        : "tooltip.analogairwaves.transmitter.broadcast_dimension");
     }
 }

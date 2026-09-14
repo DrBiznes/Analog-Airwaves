@@ -2,6 +2,7 @@ package me.jamino.analogairwaves.item;
 
 import com.palm1.analogaudio.client.ClientHooks;
 import com.palm1.analogaudio.registry.ModDataComponents;
+import me.jamino.analogairwaves.Config;
 import me.jamino.analogairwaves.block.entity.TransmitterBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -72,7 +73,9 @@ public final class PortableRadioItem extends BlockItem {
                         .withStyle(ChatFormatting.GRAY));
         AirwavesTooltips.appendControls(tooltip,
                 "tooltip.analogairwaves.portable_radio.tune",
-                "tooltip.analogairwaves.portable_radio.held",
+                Config.universalFrequencies()
+                        ? "tooltip.analogairwaves.portable_radio.held_universal"
+                        : "tooltip.analogairwaves.portable_radio.held_dimension",
                 "tooltip.analogairwaves.portable_radio.place",
                 "tooltip.analogairwaves.portable_radio.power");
     }

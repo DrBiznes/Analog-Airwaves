@@ -1,7 +1,11 @@
 package me.jamino.analogairwaves.server;
 
+import me.jamino.analogairwaves.AnalogAirwaves;
+import me.jamino.analogairwaves.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
@@ -11,18 +15,31 @@ import java.util.List;
 import java.util.Map;
 
 public final class StationManager {
+    /**
+     * Stands in for every dimension's own key when {@link Config#universalFrequencies()} is on, so
+     * all dimensions read and write the same bucket of stations.
+     */
+    private static final ResourceKey<Level> UNIVERSAL_KEY = ResourceKey.create(Registries.DIMENSION,
+            ResourceLocation.fromNamespaceAndPath(AnalogAirwaves.MOD_ID, "universal"));
+
     private static final Map<ResourceKey<Level>, Map<Integer, Map<BlockPos, StationSnapshot>>> STATIONS =
             new HashMap<>();
 
+    /** Collapses every dimension onto one shared key when frequencies are configured as universal. */
+    private static ResourceKey<Level> key(ResourceKey<Level> dimension) {
+        return Config.universalFrequencies() ? UNIVERSAL_KEY : dimension;
+    }
+
     public static void update(ResourceKey<Level> dimension, StationSnapshot snapshot) {
         remove(dimension, snapshot.transmitterPos());
-        STATIONS.computeIfAbsent(dimension, ignored -> new HashMap<>())
+        STATIONS.computeIfAbsent(key(dimension), ignored -> new HashMap<>())
                 .computeIfAbsent(snapshot.frequency(), ignored -> new LinkedHashMap<>())
                 .put(snapshot.transmitterPos().immutable(), snapshot);
     }
 
     public static void remove(ResourceKey<Level> dimension, BlockPos transmitterPos) {
-        Map<Integer, Map<BlockPos, StationSnapshot>> byFrequency = STATIONS.get(dimension);
+        ResourceKey<Level> key = key(dimension);
+        Map<Integer, Map<BlockPos, StationSnapshot>> byFrequency = STATIONS.get(key);
         if (byFrequency == null) {
             return;
         }
@@ -30,12 +47,12 @@ public final class StationManager {
         byFrequency.values().forEach(stations -> stations.remove(transmitterPos));
         byFrequency.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         if (byFrequency.isEmpty()) {
-            STATIONS.remove(dimension);
+            STATIONS.remove(key);
         }
     }
 
     public static List<StationSnapshot> getStations(ResourceKey<Level> dimension, int frequency) {
-        Map<Integer, Map<BlockPos, StationSnapshot>> byFrequency = STATIONS.get(dimension);
+        Map<Integer, Map<BlockPos, StationSnapshot>> byFrequency = STATIONS.get(key(dimension));
         if (byFrequency == null) {
             return List.of();
         }
