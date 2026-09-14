@@ -14,8 +14,5 @@ Place a radio broadcaster directly on top of an Analog Audio radio, tune it to a
 - Multiple loaded radio broadcasters on the same frequency cause interference, and receivers on that frequency hear static instead of a station.
 - **Create mod integration** When create mod is installed seperate create specific recipes will be used.
 
-
-Todo: Create recipes, Seperate radio block volume from portable radio volume.
-
  Requires [Analog Audio 0.1.5-hotfix.1](https://modrinth.com/mod/analog-audio/version/BshMjyFt).
  Recommended [Create Power Loader](https://modrinth.com/mod/create-power-loader) or [Chunk Loaders](https://modrinth.com/mod/chunk-loaders).
