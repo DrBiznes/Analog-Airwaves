@@ -2,6 +2,7 @@ package me.jamino.analogairwaves.block;
 
 import com.mojang.serialization.MapCodec;
 import com.palm1.analogaudio.registry.ModDataComponents;
+import me.jamino.analogairwaves.Config;
 import me.jamino.analogairwaves.block.entity.PortableRadioBlockEntity;
 import me.jamino.analogairwaves.block.entity.TransmitterBlockEntity;
 import me.jamino.analogairwaves.client.ClientTunerHooks;
@@ -90,7 +91,7 @@ public final class PortableRadioBlock extends BaseEntityBlock implements SimpleW
         boolean waterlogged = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(POWERED, true)
+                .setValue(POWERED, Config.portableRadioDefaultPowered())
                 .setValue(WATERLOGGED, waterlogged);
     }
 
