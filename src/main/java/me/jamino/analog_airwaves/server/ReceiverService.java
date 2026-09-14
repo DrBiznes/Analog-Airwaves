@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Drives every receiver on the server: the radio a player holds, and each placed portable radio.
@@ -127,15 +130,98 @@ public final class ReceiverService {
     }
 
     /**
-     * Called when a placed radio is broken or unloaded: tells every listener to stop so no
-     * playback is left running at a block that is no longer there.
+     * A placed radio is gone for good. Every listener that had it playing is told to stop straight
+     * away rather than waiting for the next sweep, so the audio dies with the block.
+     *
+     * <p>The stop has to be sent <em>before</em> the listener's record is dropped: that record is
+     * also what {@link #updatePlacedReceiversFor} diffs against to notice a stop is owed, so
+     * clearing it first would silently swallow the stop entirely.
      */
-    public static void onPlacedReceiverRemoved(ResourceKey<Level> dimension, BlockPos pos) {
+    public static void onPlacedReceiverDestroyed(ServerLevel level, BlockPos pos) {
+        removePlacedReceiver(level.dimension(), pos);
+        BlockPos immutable = pos.immutable();
+        for (ServerPlayer player : level.players()) {
+            dropListenerRecord(LAST_PLACED_SIGNALS.get(player.getUUID()), immutable,
+                    signal -> PacketDistributor.sendToPlayer(player, signal));
+        }
+    }
+
+    /**
+     * Stops one listener's playback of a destroyed radio: sends the stop, then forgets the radio.
+     * That order is the whole point — the record is also what {@link #updatePlacedReceiversFor}
+     * diffs against, so dropping it first would leave nothing to notice the stop was owed.
+     *
+     * @return whether this listener had the radio playing and was told to stop
+     */
+    static boolean dropListenerRecord(@Nullable Map<BlockPos, PlacedReceiverSignalS2C> sent, BlockPos pos,
+            Consumer<PlacedReceiverSignalS2C> sink) {
+        if (sent == null || sent.remove(pos) == null) {
+            return false;
+        }
+        sink.accept(PlacedReceiverSignalS2C.removed(pos));
+        return true;
+    }
+
+    /**
+     * A placed radio's chunk unloaded. Deliberately the opposite of
+     * {@link #onPlacedReceiverDestroyed}: the radio still exists, so no stop is forced and
+     * listeners simply time out. Stop tracking it and drop the per-listener records.
+     */
+    public static void onPlacedReceiverUnloaded(ResourceKey<Level> dimension, BlockPos pos) {
         removePlacedReceiver(dimension, pos);
         BlockPos immutable = pos.immutable();
         for (Map.Entry<UUID, Map<BlockPos, PlacedReceiverSignalS2C>> entry : LAST_PLACED_SIGNALS.entrySet()) {
             entry.getValue().remove(immutable);
         }
+    }
+
+    /**
+     * Announces a placed radio to everyone in range immediately instead of waiting for the next
+     * sweep. Used when a radio is placed, retuned or powered on/off, so those changes are heard at
+     * once rather than up to half a second later.
+     */
+    public static void pushPlacedReceiver(PortableRadioBlockEntity radio) {
+        addPlacedReceiver(radio);
+        Level level = radio.getLevel();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        BlockPos pos = radio.getBlockPos().immutable();
+        for (ServerPlayer player : serverLevel.players()) {
+            Map<BlockPos, PlacedReceiverSignalS2C> sent =
+                    LAST_PLACED_SIGNALS.computeIfAbsent(player.getUUID(), ignored -> new HashMap<>());
+            if (!sendPlacedSignal(player, pos, radio, sent, true) && sent.remove(pos) != null) {
+                // It just became inaudible (powered off, retuned to a dead frequency): stop now.
+                PacketDistributor.sendToPlayer(player, PlacedReceiverSignalS2C.stopped(pos));
+            }
+        }
+    }
+
+    /**
+     * Sends one placed radio's state to one listener if it changed, and reports whether the radio
+     * is audible to them at all. Shared by the periodic sweep and the immediate push so the range,
+     * power and station checks only exist in one place.
+     */
+    private static boolean sendPlacedSignal(ServerPlayer player, BlockPos pos, PortableRadioBlockEntity radio,
+            Map<BlockPos, PlacedReceiverSignalS2C> sent, boolean force) {
+        if (radio.isRemoved() || !radio.isPowered()
+                || player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D)
+                        > PLACED_RADIO_RANGE_SQR) {
+            return false;
+        }
+
+        ReceiverSignalS2C resolved = resolveSignal(player.level().dimension(), radio.getFrequency());
+        if (resolved.resolution() != StationResolution.PLAYING || resolved.station() == null) {
+            return false;
+        }
+
+        PlacedReceiverSignalS2C signal = PlacedReceiverSignalS2C.playing(pos, resolved.station());
+        if (force || !signal.equals(sent.get(pos))) {
+            sent.put(pos, signal);
+            PacketDistributor.sendToPlayer(player, signal);
+        }
+        return true;
     }
 
     private static void updatePlacedReceiversFor(ServerPlayer player) {
@@ -147,24 +233,8 @@ public final class ReceiverService {
         Set<BlockPos> audible = new HashSet<>();
         if (byPos != null) {
             for (Map.Entry<BlockPos, PortableRadioBlockEntity> entry : byPos.entrySet()) {
-                BlockPos pos = entry.getKey();
-                PortableRadioBlockEntity radio = entry.getValue();
-                if (radio.isRemoved() || !radio.isPowered()
-                        || player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D)
-                                > PLACED_RADIO_RANGE_SQR) {
-                    continue;
-                }
-
-                ReceiverSignalS2C resolved = resolveSignal(player.level().dimension(), radio.getFrequency());
-                if (resolved.resolution() != StationResolution.PLAYING || resolved.station() == null) {
-                    continue;
-                }
-
-                audible.add(pos);
-                PlacedReceiverSignalS2C signal = new PlacedReceiverSignalS2C(pos, true, resolved.station());
-                if (heartbeat || !signal.equals(sent.get(pos))) {
-                    sent.put(pos, signal);
-                    PacketDistributor.sendToPlayer(player, signal);
+                if (sendPlacedSignal(player, entry.getKey(), entry.getValue(), sent, heartbeat)) {
+                    audible.add(entry.getKey());
                 }
             }
         }

@@ -39,6 +39,7 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         this.frequency = clamped;
         setChanged();
         syncToClient();
+        pushToListeners();
     }
 
     public boolean isPowered() {
@@ -53,6 +54,7 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         setChanged();
         updateVisualState();
         syncToClient();
+        pushToListeners();
     }
 
     public void togglePowered() {
@@ -76,19 +78,32 @@ public final class PortableRadioBlockEntity extends BlockEntity {
         }
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (level != null && !level.isClientSide()) {
-            ReceiverService.addPlacedReceiver(this);
+    /** Retuning or switching power takes effect at once instead of on the next sweep. */
+    private void pushToListeners() {
+        if (level != null && !level.isClientSide() && !isRemoved()) {
+            ReceiverService.pushPlacedReceiver(this);
         }
     }
 
     @Override
-    public void setRemoved() {
-        // Drop any playback tied to this position before the block entity goes away.
+    public void onLoad() {
+        super.onLoad();
         if (level != null && !level.isClientSide()) {
-            ReceiverService.onPlacedReceiverRemoved(level.dimension(), worldPosition);
+            // Only start tracking here. A radio being placed is announced from
+            // PortableRadioBlock#setPlacedBy instead, because this runs before the frequency has
+            // been copied off the stack and would otherwise announce the wrong station.
+            ReceiverService.addPlacedReceiver(this);
+        }
+    }
+
+    /**
+     * Fires for both destruction and chunk unload and cannot tell them apart, so it only stops
+     * tracking. Destruction is handled earlier and explicitly by {@link PortableRadioBlock}.
+     */
+    @Override
+    public void setRemoved() {
+        if (level != null && !level.isClientSide()) {
+            ReceiverService.onPlacedReceiverUnloaded(level.dimension(), worldPosition);
         }
         super.setRemoved();
     }
@@ -98,7 +113,7 @@ public final class PortableRadioBlockEntity extends BlockEntity {
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (level != null && !level.isClientSide()) {
-            ReceiverService.onPlacedReceiverRemoved(level.dimension(), worldPosition);
+            ReceiverService.onPlacedReceiverUnloaded(level.dimension(), worldPosition);
         }
     }
 
