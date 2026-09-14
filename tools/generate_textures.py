@@ -13,8 +13,8 @@ import os
 import struct
 import zlib
 
-OUT_BLOCK = os.path.join("src", "main", "resources", "assets", "analog_airwaves", "textures", "block")
-OUT_ITEM = os.path.join("src", "main", "resources", "assets", "analog_airwaves", "textures", "item")
+OUT_BLOCK = os.path.join("src", "main", "resources", "assets", "analogairwaves", "textures", "block")
+OUT_ITEM = os.path.join("src", "main", "resources", "assets", "analogairwaves", "textures", "item")
 
 # --- Analog Audio radio palette (sampled from analogaudio:block/radio_*) --------------------
 BORDER = (0x2C, 0x2C, 0x21)      # side-face frame

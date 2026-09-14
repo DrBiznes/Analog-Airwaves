@@ -1,6 +1,0 @@
-{
-  "parent": "analog_airwaves:block/portable_radio_base",
-  "textures": {
-    "front": "analog_airwaves:block/portable_radio_front_off"
-  }
-}

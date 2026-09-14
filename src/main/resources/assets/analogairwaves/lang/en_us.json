@@ -1,0 +1,21 @@
+{
+  "block.analogairwaves.transmitter": "Radio Transmitter",
+  "block.analogairwaves.portable_radio": "Portable Radio",
+  "item.analogairwaves.portable_radio": "Portable Radio",
+
+  "tooltip.analogairwaves.view_tooltip_description": "Hold %s for info.",
+
+  "tooltip.analogairwaves.portable_radio.frequency": "Frequency: %s",
+  "tooltip.analogairwaves.portable_radio.tune": "Hold %s and drag to tune.",
+  "tooltip.analogairwaves.portable_radio.held": "Receives its station while held.",
+  "tooltip.analogairwaves.portable_radio.place": "Press %s on a surface to place.",
+  "tooltip.analogairwaves.portable_radio.power": "Sneak and press %s on a placed radio to toggle power.",
+
+  "tooltip.analogairwaves.transmitter.place": "Place on top of a radio.",
+  "tooltip.analogairwaves.transmitter.tune": "Hold %s and drag to tune.",
+  "tooltip.analogairwaves.transmitter.broadcast": "Broadcasts the radio across the dimension.",
+
+  "message.analogairwaves.no_signal": "Frequency %s — No signal",
+  "message.analogairwaves.interference": "Frequency %s — Interference",
+  "message.analogairwaves.playing": "Frequency %s — %s"
+}

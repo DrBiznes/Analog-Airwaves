@@ -6,10 +6,10 @@
       "request": "launch",
       "name": "Client",
       "presentation": {
-        "group": "Mod Development - analog_airwaves",
+        "group": "Mod Development - analogairwaves",
         "order": 0
       },
-      "projectName": "analog_airwaves",
+      "projectName": "analogairwaves",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\clientRunProgramArgs.txt"
@@ -28,10 +28,10 @@
       "request": "launch",
       "name": "Data",
       "presentation": {
-        "group": "Mod Development - analog_airwaves",
+        "group": "Mod Development - analogairwaves",
         "order": 1
       },
-      "projectName": "analog_airwaves",
+      "projectName": "analogairwaves",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\dataRunProgramArgs.txt"
@@ -50,10 +50,10 @@
       "request": "launch",
       "name": "GameTestServer",
       "presentation": {
-        "group": "Mod Development - analog_airwaves",
+        "group": "Mod Development - analogairwaves",
         "order": 2
       },
-      "projectName": "analog_airwaves",
+      "projectName": "analogairwaves",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\gameTestServerRunProgramArgs.txt"
@@ -72,10 +72,10 @@
       "request": "launch",
       "name": "Server",
       "presentation": {
-        "group": "Mod Development - analog_airwaves",
+        "group": "Mod Development - analogairwaves",
         "order": 3
       },
-      "projectName": "analog_airwaves",
+      "projectName": "analogairwaves",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
         "@C:\\hackerman\\Analog Airwaves\\build\\moddev\\serverRunProgramArgs.txt"

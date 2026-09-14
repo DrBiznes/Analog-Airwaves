@@ -1,0 +1,51 @@
+{
+  "__comment": "Portable radio: a miniature of the Analog Audio radio. Every element is axis-aligned so the block's outline matches it exactly.",
+  "textures": {
+    "particle": "#side",
+    "front": "analogairwaves:block/portable_radio_front",
+    "side": "analogairwaves:block/portable_radio_side",
+    "back": "analogairwaves:block/portable_radio_back",
+    "top": "analogairwaves:block/portable_radio_top",
+    "bottom": "analogairwaves:block/portable_radio_bottom",
+    "antenna": "analogairwaves:block/portable_radio_antenna"
+  },
+  "elements": [
+    {
+      "__comment": "Body.",
+      "from": [3, 0, 5],
+      "to": [13, 7, 11],
+      "faces": {
+        "down": { "texture": "#bottom", "cullface": "down", "uv": [3, 5, 13, 11] },
+        "up": { "texture": "#top", "uv": [3, 5, 13, 11] },
+        "north": { "texture": "#front", "uv": [3, 9, 13, 16] },
+        "south": { "texture": "#back", "uv": [3, 9, 13, 16] },
+        "west": { "texture": "#side", "uv": [5, 9, 11, 16] },
+        "east": { "texture": "#side", "uv": [5, 9, 11, 16] }
+      }
+    },
+    {
+      "__comment": "Carry handle.",
+      "from": [4, 7, 6],
+      "to": [9, 8, 10],
+      "faces": {
+        "up": { "texture": "#top", "uv": [4, 6, 9, 10] },
+        "north": { "texture": "#front", "uv": [4, 8, 9, 9] },
+        "south": { "texture": "#back", "uv": [4, 8, 9, 9] },
+        "west": { "texture": "#side", "uv": [6, 8, 10, 9] },
+        "east": { "texture": "#side", "uv": [6, 8, 10, 9] }
+      }
+    },
+    {
+      "__comment": "Aerial.",
+      "from": [11, 7, 7],
+      "to": [12, 15, 8],
+      "faces": {
+        "up": { "texture": "#antenna", "uv": [0, 0, 1, 1] },
+        "north": { "texture": "#antenna", "uv": [0, 0, 1, 8] },
+        "south": { "texture": "#antenna", "uv": [0, 0, 1, 8] },
+        "west": { "texture": "#antenna", "uv": [0, 0, 1, 8] },
+        "east": { "texture": "#antenna", "uv": [0, 0, 1, 8] }
+      }
+    }
+  ]
+}

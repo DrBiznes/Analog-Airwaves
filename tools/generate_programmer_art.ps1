@@ -1,5 +1,5 @@
 param(
-    [string]$OutputRoot = (Join-Path $PSScriptRoot '..\src\main\resources\assets\analog_airwaves\textures')
+    [string]$OutputRoot = (Join-Path $PSScriptRoot '..\src\main\resources\assets\analogairwaves\textures')
 )
 
 $ErrorActionPreference = 'Stop'

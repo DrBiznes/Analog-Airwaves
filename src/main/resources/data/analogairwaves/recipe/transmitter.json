@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " L ",
+    "CRC",
+    "SSS"
+  ],
+  "key": {
+    "L": { "item": "minecraft:lightning_rod" },
+    "C": { "item": "minecraft:copper_ingot" },
+    "R": { "item": "minecraft:redstone_block" },
+    "S": { "tag": "minecraft:wooden_slabs" }
+  },
+  "result": {
+    "id": "analogairwaves:transmitter",
+    "count": 1
+  }
+}
