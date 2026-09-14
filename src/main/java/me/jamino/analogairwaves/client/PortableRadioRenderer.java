@@ -1,51 +1,25 @@
 package me.jamino.analogairwaves.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import me.jamino.analogairwaves.AnalogAirwaves;
 import me.jamino.analogairwaves.block.PortableRadioBlock;
 import me.jamino.analogairwaves.block.entity.PortableRadioBlockEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 /**
  * Draws the broadcast waves above a placed portable radio that is actively playing a station.
  *
- * <p>The waves are a camera-facing billboard rather than geometry, so they read the same from any
- * angle, and they are deliberately gated on playback rather than power: a radio that is switched
- * on but tuned to a dead frequency is silent, and silent radios should not appear to transmit.
+ * <p>The waves are gated on playback rather than power: a radio that is switched on but tuned to
+ * a dead frequency is silent, and silent radios should not appear to transmit.
  */
 public final class PortableRadioRenderer implements BlockEntityRenderer<PortableRadioBlockEntity> {
     /**
-     * Drawn straight from the texture file rather than the block atlas: no block model references
-     * it, so it would never be stitched in. That means the .mcmeta animation does not apply
-     * either, and the frames are cycled by hand through the uv window below.
-     */
-    private static final ResourceLocation WAVES = ResourceLocation.fromNamespaceAndPath(
-            AnalogAirwaves.MOD_ID, "textures/block/broadcast_waves.png");
-
-    /** The texture is a vertical strip of this many 16x16 frames. */
-    private static final int FRAMES = 3;
-
-    /** Game ticks each frame is held for. */
-    private static final int TICKS_PER_FRAME = 6;
-
-    /**
-     * Height of the billboard's centre above the block origin.
-     *
-     * <p>The arcs are drawn around y=13 of a 16px frame rather than at its middle, so the quad's
-     * visual centre sits above its geometric centre. This offset already accounts for that: it
-     * puts the arcs just over the aerial tip (model y=15) instead of floating clear of it.
+     * Height of the billboard's centre above the block origin, sitting just over the aerial tip
+     * at model y=15.
      */
     private static final float HEIGHT = 1.15F;
 
@@ -69,44 +43,10 @@ public final class PortableRadioRenderer implements BlockEntityRenderer<Portable
             return;
         }
 
-        poseStack.pushPose();
         Vec3 aerial = aerialOffset(radio.getBlockState());
-        poseStack.translate(aerial.x, HEIGHT, aerial.z);
-
-        // Face the camera. Using the camera's own rotation keeps the billboard upright rather
-        // than tumbling when the player looks up or down.
-        Quaternionf facing = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
-        poseStack.mulPose(facing);
-
-        VertexConsumer buffer = buffers.getBuffer(RenderType.entityCutout(WAVES));
-        Matrix4f matrix = poseStack.last().pose();
-        float half = SIZE / 2.0F;
-
-        // Advance the frame off world time, so every radio's waves stay in step with each other.
         long time = radio.getLevel() == null ? 0L : radio.getLevel().getGameTime();
-        int frame = (int) ((time / TICKS_PER_FRAME) % FRAMES);
-        float v0 = frame / (float) FRAMES;
-        float v1 = (frame + 1) / (float) FRAMES;
-
-        // Full-bright: the waves are emissive, so they stay legible in an unlit room.
-        PoseStack.Pose pose = poseStack.last();
-        int light = LightTexture.FULL_BRIGHT;
-        vertex(buffer, matrix, pose, -half, -half, 0.0F, v1, light, packedOverlay);
-        vertex(buffer, matrix, pose, half, -half, 1.0F, v1, light, packedOverlay);
-        vertex(buffer, matrix, pose, half, half, 1.0F, v0, light, packedOverlay);
-        vertex(buffer, matrix, pose, -half, half, 0.0F, v0, light, packedOverlay);
-
-        poseStack.popPose();
-    }
-
-    private static void vertex(VertexConsumer buffer, Matrix4f matrix, PoseStack.Pose pose,
-            float x, float y, float u, float v, int light, int overlay) {
-        buffer.addVertex(matrix, x, y, 0.0F)
-                .setColor(255, 255, 255, 255)
-                .setUv(u, v)
-                .setOverlay(overlay)
-                .setLight(light)
-                .setNormal(pose, 0.0F, 0.0F, 1.0F);
+        BroadcastWaves.render(poseStack, buffers, time, aerial.x, HEIGHT, aerial.z, SIZE,
+                packedOverlay);
     }
 
     /**
