@@ -14,6 +14,8 @@ public final class AirwavesClientRenderers {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(AirwavesBlockEntities.PORTABLE_RADIO.get(),
                 PortableRadioRenderer::new);
+        event.registerBlockEntityRenderer(AirwavesBlockEntities.TRANSMITTER.get(),
+                TransmitterRenderer::new);
     }
 
     private AirwavesClientRenderers() {
