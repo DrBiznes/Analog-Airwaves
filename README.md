@@ -1,4 +1,4 @@
-<img width="800" height="300" alt="banner" src="https://github.com/user-attachments/assets/fdc41e7f-2613-4ad8-b5ae-c4eedd8a1d94" />
+<img width="800" height="300" alt="banner" src="https://github.com/user-attachments/assets/f27eecd1-93c1-4e42-9874-91fd9a21e6ba" />
 
 A small radio-station addon for [Analog Audio](https://modrinth.com/mod/analog-audio), adding radio broadcasters and portable radios.
 
