@@ -4,3 +4,10 @@ build/
 out/
 run/
 *.iml
+
+# Local tooling scripts (not part of the mod)
+tools/
+*.py
+*.ps1
+*.psm1
+*.psd1
