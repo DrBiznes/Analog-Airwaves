@@ -2,6 +2,7 @@
   "block.analogairwaves.transmitter": "Radio Broadcaster",
   "block.analogairwaves.portable_radio": "Portable Radio",
   "item.analogairwaves.portable_radio": "Portable Radio",
+  "item.analogairwaves.incomplete_portable_radio": "Incomplete Portable Radio",
 
   "tooltip.analogairwaves.view_tooltip_description": "Hold %s for info.",
 

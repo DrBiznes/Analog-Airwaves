@@ -1,0 +1,53 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "create" }
+  ],
+  "type": "create:sequenced_assembly",
+  "ingredient": { "tag": "c:plates/copper" },
+  "loops": 1,
+  "results": [
+    { "id": "analogairwaves:portable_radio" }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        { "item": "analogairwaves:incomplete_portable_radio" },
+        { "item": "create:transmitter" }
+      ],
+      "results": [ { "id": "analogairwaves:incomplete_portable_radio" } ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        { "item": "analogairwaves:incomplete_portable_radio" },
+        { "tag": "c:dusts/redstone" }
+      ],
+      "results": [ { "id": "analogairwaves:incomplete_portable_radio" } ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        { "item": "analogairwaves:incomplete_portable_radio" },
+        { "tag": "c:plates/copper" }
+      ],
+      "results": [ { "id": "analogairwaves:incomplete_portable_radio" } ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        { "item": "analogairwaves:incomplete_portable_radio" }
+      ],
+      "results": [ { "id": "analogairwaves:incomplete_portable_radio" } ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        { "item": "analogairwaves:incomplete_portable_radio" },
+        { "tag": "c:nuggets/iron" }
+      ],
+      "results": [ { "id": "analogairwaves:incomplete_portable_radio" } ]
+    }
+  ],
+  "transitional_item": { "id": "analogairwaves:incomplete_portable_radio" }
+}

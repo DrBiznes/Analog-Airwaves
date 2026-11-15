@@ -3,6 +3,7 @@ package me.jamino.analogairwaves.registry;
 import com.palm1.analogaudio.registry.ModDataComponents;
 import me.jamino.analogairwaves.AnalogAirwaves;
 import me.jamino.analogairwaves.RadioVolume;
+import me.jamino.analogairwaves.item.IncompletePortableRadioItem;
 import me.jamino.analogairwaves.item.PortableRadioItem;
 import me.jamino.analogairwaves.item.TransmitterItem;
 import net.minecraft.world.item.Item;
@@ -20,6 +21,11 @@ public final class AirwavesItems {
                     .stacksTo(1)
                     .component(ModDataComponents.FREQUENCY.get(), 1)
                     .component(AirwavesDataComponents.RADIO_VOLUME.get(), RadioVolume.DEFAULT)));
+
+    // Transitional item for the Create sequenced assembly recipe. Always registered so the
+    // registry is identical with or without Create; only that recipe ever produces it.
+    public static final DeferredItem<IncompletePortableRadioItem> INCOMPLETE_PORTABLE_RADIO = ITEMS.register(
+            "incomplete_portable_radio", () -> new IncompletePortableRadioItem(new Item.Properties()));
 
     private AirwavesItems() {
     }

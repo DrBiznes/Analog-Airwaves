@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "analogairwaves:item/incomplete_portable_radio"
+  }
+}
