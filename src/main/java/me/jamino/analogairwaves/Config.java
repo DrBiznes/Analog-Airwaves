@@ -1,5 +1,6 @@
 package me.jamino.analogairwaves;
 
+import me.jamino.analogairwaves.recipe.PortableRadioRecipe;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
@@ -10,6 +11,7 @@ public final class Config {
 
     public static final ModConfigSpec.BooleanValue UNIVERSAL_FREQUENCIES;
     public static final ModConfigSpec.BooleanValue PORTABLE_RADIO_DEFAULT_POWERED;
+    public static final ModConfigSpec.EnumValue<PortableRadioRecipe> PORTABLE_RADIO_RECIPE;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -32,6 +34,18 @@ public final class Config {
                 .define("defaultPoweredWhenPlaced", true);
         builder.pop();
 
+        builder.comment("Crafting recipes").push("recipes");
+        PORTABLE_RADIO_RECIPE = builder
+                .comment(
+                        "Which Portable Radio recipe to use when Create is installed:",
+                        "  CREATE_SEQUENCED_ASSEMBLY - Create sequenced assembly starting from a Copper Sheet",
+                        "  CREATE_CRAFTING           - crafting table recipe with a Create Transmitter",
+                        "  VANILLA                   - the vanilla crafting table recipe",
+                        "Without Create installed the vanilla recipe is always used.",
+                        "Takes effect on server restart or /reload.")
+                .defineEnum("portableRadioRecipe", PortableRadioRecipe.CREATE_SEQUENCED_ASSEMBLY);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -41,6 +55,14 @@ public final class Config {
 
     public static boolean portableRadioDefaultPowered() {
         return valueOrDefault(PORTABLE_RADIO_DEFAULT_POWERED);
+    }
+
+    public static PortableRadioRecipe portableRadioRecipe() {
+        try {
+            return PORTABLE_RADIO_RECIPE.get();
+        } catch (IllegalStateException ignored) {
+            return PORTABLE_RADIO_RECIPE.getDefault();
+        }
     }
 
     /**

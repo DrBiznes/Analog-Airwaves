@@ -1,21 +1,31 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:not",
-      "value": { "type": "neoforge:mod_loaded", "modid": "create" }
+      "type": "analogairwaves:portable_radio_recipe",
+      "recipe": "vanilla"
     }
   ],
   "parent": "minecraft:recipes/root",
-  "rewards": { "recipes": ["analogairwaves:portable_radio"] },
+  "rewards": {
+    "recipes": [
+      "analogairwaves:portable_radio"
+    ]
+  },
   "criteria": {
     "has_redstone": {
       "trigger": "minecraft:inventory_changed",
-      "conditions": { "items": [{ "items": "minecraft:redstone" }] }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": { "recipe": "analogairwaves:portable_radio" }
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:redstone"
+          }
+        ]
+      }
     }
   },
-  "requirements": [["has_redstone", "has_the_recipe"]]
+  "requirements": [
+    [
+      "has_redstone"
+    ]
+  ]
 }

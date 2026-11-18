@@ -1,6 +1,6 @@
 {
   "neoforge:conditions": [
-    { "type": "neoforge:mod_loaded", "modid": "create" }
+    { "type": "analogairwaves:portable_radio_recipe", "recipe": "create_sequenced_assembly" }
   ],
   "type": "create:sequenced_assembly",
   "ingredient": { "tag": "c:plates/copper" },

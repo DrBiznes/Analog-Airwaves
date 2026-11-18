@@ -11,7 +11,7 @@ Place a radio broadcaster directly on top of an Analog Audio radio, tune it to a
 - **Each portable radio has its own volume**, independent of the broadcasting radio. Sneak and scroll while holding one to set it from 0% to 150%; the level shows above the hotbar and in the tooltip. Turn the broadcaster all the way down and listeners still hear it at whatever volume they picked.
 - Volume is set on the radio in hand, not on a placed one. A placed radio keeps the volume it was placed with, so pick it up, adjust, and set it back down to change it.
 - Multiple loaded radio broadcasters on the same frequency cause interference, and receivers on that frequency hear static instead of a station.
-- **Create mod integration** When create mod is installed seperate create specific recipes will be used.
+- **Create mod integration** When Create is installed, Create-specific recipes are used. The Portable Radio recipe can be set in the config to sequenced assembly (default), a crafting table recipe with Create items, or the vanilla recipe.
 
  Requires [Analog Audio 0.1.5-hotfix.1](https://modrinth.com/mod/analog-audio/version/BshMjyFt).
  Recommended [Create Power Loader](https://modrinth.com/mod/create-power-loader) or [Chunk Loaders](https://modrinth.com/mod/chunk-loaders).

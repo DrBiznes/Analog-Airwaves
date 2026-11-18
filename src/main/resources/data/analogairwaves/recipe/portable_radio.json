@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:not",
-      "value": { "type": "neoforge:mod_loaded", "modid": "create" }
+      "type": "analogairwaves:portable_radio_recipe",
+      "recipe": "vanilla"
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -13,10 +13,18 @@
     "CRC"
   ],
   "key": {
-    "I": { "item": "minecraft:iron_nugget" },
-    "C": { "item": "minecraft:copper_ingot" },
-    "Q": { "item": "minecraft:quartz" },
-    "R": { "item": "minecraft:redstone" }
+    "I": {
+      "item": "minecraft:iron_nugget"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
   },
   "result": {
     "id": "analogairwaves:portable_radio",
